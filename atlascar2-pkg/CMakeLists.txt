@@ -204,3 +204,15 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
+
+add_executable(CAN_Transmitter src/CAN_Transmitter.cpp)
+target_link_libraries(CAN_Transmitter ${catkin_LIBRARIES})
+add_dependencies(CAN_Transmitter atlascar2_messages_cpp)
+
+add_executable(CAN_Receiver src/CAN_Receiver.cpp)
+target_link_libraries(CAN_Receiver ${catkin_LIBRARIES})
+add_dependencies(CAN_Receiver atlascar2_messages_cpp)
+
+add_executable(ReceiveMessage src/ReceiveMessage.cpp)
+target_link_libraries(ReceiveMessage ${catkin_LIBRARIES})
+add_dependencies(ReceiveMessage atlascar2_messages_cpp)
