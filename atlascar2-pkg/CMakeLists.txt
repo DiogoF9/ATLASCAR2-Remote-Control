@@ -216,3 +216,7 @@ add_dependencies(CAN_Receiver atlascar2_messages_cpp)
 add_executable(ReceiveMessage src/ReceiveMessage.cpp)
 target_link_libraries(ReceiveMessage ${catkin_LIBRARIES})
 add_dependencies(ReceiveMessage atlascar2_messages_cpp)
+
+add_executable(odometria src/odometria.cpp)
+target_link_libraries(odometria ${catkin_LIBRARIES})
+add_dependencies(odometria atlascar2_messages_cpp)
