@@ -1,5 +1,8 @@
 #include "ros/ros.h"
 #include <atlascar2/NominalData.h>
+#include <atlascar2/RawData.h>
+#include <can_msgs/Frame.h>
+
 #include <vector>
 
 #include <sstream>
@@ -25,19 +28,6 @@
 #include <linux/can/raw.h>
 
 
-struct Status{
-            struct RD{
-                    struct can_frame vel_frame;
-                    struct can_frame dir_frame;
-            };
-            RD rawdata;
-            struct NV{
-                    int velocity;
-                    int orientation;
-            };
-            NV nominalvalues;
-};
-
 int main(int argc, char **argv)
 {
         ros::init(argc, argv, "canReceiveAndUpdateStatus");
@@ -48,8 +38,6 @@ int main(int argc, char **argv)
         struct sockaddr_can addr;
         struct can_frame frame;
         struct ifreq ifr;
-
-        Status status;
 
         /*name of the can device - vcan0 in case of virtual CAN bus*/
         const char *ifname = "vcan0";
@@ -71,20 +59,17 @@ int main(int argc, char **argv)
 	}
 
      ros::Publisher pub = n.advertise<atlascar2::NominalData>("NominalData", 1000);
+     ros::Publisher pub2 = n.advertise<can_msgs::Frame>("RawFrames", 1000);
      ros::Rate loop_rate(1000);
 
      // the message to be published
-      atlascar2::NominalData nominaldata;
-
-
+     atlascar2::NominalData nominaldata;
+     atlascar2::RawData rawdata;
+     can_msgs::Frame msg;
 
      int count = 0;
-     int velocidade, angulo;
      while (ros::ok())
 	{
-	        // std_msgs::Int32MultiArray array;
-	        //clear array
-	        //array.data.clear();
 	        nbytes_rcv = recv(s, &frame, sizeof(struct can_frame),0);
 
                 if (nbytes_rcv < 0) {
@@ -101,22 +86,27 @@ int main(int argc, char **argv)
                 // velocidade
                 if (frame.can_id == 0x412)
                 {
-                        //printf("velocidade: %d    ",frame.data[1]);
-                        //status.nominalvalues.velocity = frame.data[1];
-                        //status.rawdata.vel_frame = frame;
-                        //velocidade = frame.data[1];
                         nominaldata.velocity = frame.data[1];
                 }
                 // direcao
                 if (frame.can_id == 0x236)
                 {
-                        // printf("angulo: %d\n",(frame.data[0]*256+frame.data[1]-4096)/2);
-                        //status.nominalvalues.orientation = (frame.data[0]*256+frame.data[1]-4096)/2;
-                        //status.rawdata.dir_frame = frame;
                         nominaldata.orientation = (frame.data[0]*256+frame.data[1]-4096)/2;
                 }
 
+                msg.id = frame.can_id;
+                msg.dlc = frame.can_dlc;
+                msg.data[0] = frame.data[0];
+                msg.data[1] = frame.data[1];
+                msg.data[2] = frame.data[2];
+                msg.data[3] = frame.data[3];
+                msg.data[4] = frame.data[4];
+                msg.data[5] = frame.data[5];
+                msg.data[6] = frame.data[6];
+                msg.data[7] = frame.data[7];
+
                 pub.publish(nominaldata);
+                pub2.publish(msg);
                 ros::spinOnce();
 
                 loop_rate.sleep();
