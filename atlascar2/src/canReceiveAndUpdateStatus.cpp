@@ -108,11 +108,11 @@ int main(int argc, char **argv)
                 // doors
                 if ((frame.can_id == 0x424 && frame.data[2] == 0x0F) || (frame.can_id == 0x424 && frame.data[2] == 0x0D) )
                 {
-                        nominaldata.door = true;
+                        nominaldata.door = false;
                 }
                 if (frame.can_id == 0x424 && frame.data[2] == 0x0C)
                 {
-                        nominaldata.door = false;
+                        nominaldata.door = true;
                 }
                 // Left, right and both blinkers
                 if (frame.can_id == 0x424 && frame.data[1] == 0x02)

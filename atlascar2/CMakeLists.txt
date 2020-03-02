@@ -230,3 +230,7 @@ add_dependencies(canReceiveAndUpdateStatus atlascar2_messages_cpp)
 add_executable(sniffer src/sniffer.cpp)
 target_link_libraries(sniffer ${catkin_LIBRARIES})
 add_dependencies(sniffer atlascar2_messages_cpp)
+
+add_executable(sendFrame src/sendFrame.cpp)
+target_link_libraries(sendFrame ${catkin_LIBRARIES})
+add_dependencies(sendFrame atlascar2_messages_cpp)
