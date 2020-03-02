@@ -3,6 +3,7 @@
 
 void dataCallback(const atlascar2::NominalData::ConstPtr& msg)
 {
+  ROS_INFO("travao: %d", msg->breaker);
   ROS_INFO("velocidade: %d", msg->velocity);
   ROS_INFO("orientacao: %d", msg->orientation);
 }

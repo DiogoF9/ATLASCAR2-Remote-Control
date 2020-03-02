@@ -1,6 +1,5 @@
 #include "ros/ros.h"
 #include <atlascar2/NominalData.h>
-#include <atlascar2/RawData.h>
 #include <can_msgs/Frame.h>
 
 #include <vector>
@@ -64,7 +63,6 @@ int main(int argc, char **argv)
 
      // the message to be published
      atlascar2::NominalData nominaldata;
-     atlascar2::RawData rawdata;
      can_msgs::Frame msg;
 
      int count = 0;
@@ -83,15 +81,84 @@ int main(int argc, char **argv)
 
 
                 //printf("message received: %03X  %d  %02X %02X %02X %02X %02X %02X %02X %02X\n",frame.can_id, frame.can_dlc, frame.data[0], frame.data[1], frame.data[2], frame.data[3], frame.data[4], frame.data[5], frame.data[6], frame.data[7]);    }
-                // velocidade
+                // velocity
                 if (frame.can_id == 0x412)
                 {
                         nominaldata.velocity = frame.data[1];
                 }
-                // direcao
+                // orientation
                 if (frame.can_id == 0x236)
                 {
                         nominaldata.orientation = (frame.data[0]*256+frame.data[1]-4096)/2;
+                }
+                // odometer
+                if (frame.can_id == 0x412)
+                {
+                        nominaldata.odometer = (frame.data[2]*256+frame.data[3])*256+frame.data[4];
+                }
+                // breaker
+                if (frame.can_id == 0x231 && frame.data[4] == 0x00)
+                {
+                        nominaldata.breaker = false;
+                }
+                if (frame.can_id == 0x231 && frame.data[4] == 0x02)
+                {
+                        nominaldata.breaker = true;
+                }
+                // doors
+                if ((frame.can_id == 0x424 && frame.data[2] == 0x0F) || (frame.can_id == 0x424 && frame.data[2] == 0x0D) )
+                {
+                        nominaldata.door = true;
+                }
+                if (frame.can_id == 0x424 && frame.data[2] == 0x0C)
+                {
+                        nominaldata.door = false;
+                }
+                // Left, right and both blinkers
+                if (frame.can_id == 0x424 && frame.data[1] == 0x02)
+                {
+                        nominaldata.left_blinker = true;
+                }
+                if (frame.can_id == 0x424 && frame.data[1] == 0x01)
+                {
+                        nominaldata.right_blinker = true;
+                }
+                if (frame.can_id == 0x424 && frame.data[1] == 0x03)
+                {
+                        nominaldata.left_blinker = true;
+                        nominaldata.right_blinker = true;
+                }
+                if (frame.can_id == 0x424 && frame.data[1] != 0x01 && frame.data[1] != 0x02 && frame.data[1] != 0x03)
+                {
+                        nominaldata.left_blinker = false;
+                        nominaldata.right_blinker = false;
+                }
+                // med lights
+                if (frame.can_id == 0x424 && frame.data[0] == 0x47) // && frame.data[1] == 0x60) // on
+                {
+                        nominaldata.med_lights = true;
+                }
+                // max lights
+                if (frame.can_id == 0x424 && (frame.data[1] == 0x24 || frame.data[1] == 0x64)) // on with and without med lights
+                {
+                        nominaldata.max_lights = true;
+                }
+                if (frame.can_id == 0x424 && (frame.data[0] == 0x43 || frame.data[0] == 0x03)) //  && frame.data[1] == 0x60) // on
+                {
+                        nominaldata.med_lights = false;
+                }
+                if (frame.can_id == 0x424 && frame.data[1] == 0x00) // && frame.data[1] == 0x60) // on
+                {
+                        nominaldata.max_lights = false;
+                }
+                // seat belt
+                if (frame.can_id == 0x424 && frame.data[0] == 0x03) // on
+                {
+                        nominaldata.seat_belt = true;
+                }
+                if (frame.can_id == 0x424 && (frame.data[0] == 0x43)) // on
+                {
+                        nominaldata.seat_belt = false;
                 }
 
                 msg.id = frame.can_id;

@@ -52,7 +52,6 @@ find_package(catkin REQUIRED COMPONENTS
  add_message_files(
    FILES
    NominalData.msg
-   RawData.msg
  )
 
 ## Generate services in the 'srv' folder
@@ -227,3 +226,7 @@ add_dependencies(odometria atlascar2_messages_cpp)
 add_executable(canReceiveAndUpdateStatus src/canReceiveAndUpdateStatus.cpp)
 target_link_libraries(canReceiveAndUpdateStatus ${catkin_LIBRARIES})
 add_dependencies(canReceiveAndUpdateStatus atlascar2_messages_cpp)
+
+add_executable(sniffer src/sniffer.cpp)
+target_link_libraries(sniffer ${catkin_LIBRARIES})
+add_dependencies(sniffer atlascar2_messages_cpp)
