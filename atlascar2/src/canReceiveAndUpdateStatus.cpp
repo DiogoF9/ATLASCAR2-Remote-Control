@@ -65,6 +65,7 @@ int main(int argc, char **argv)
      atlascar2::NominalData nominaldata;
      can_msgs::Frame msg;
 
+
      int count = 0;
      while (ros::ok())
 	{
@@ -78,13 +79,12 @@ int main(int argc, char **argv)
                         fprintf(stderr, "read: incomplete CAN frame\n");
                         return 1;
                 }
-
-
                 //printf("message received: %03X  %d  %02X %02X %02X %02X %02X %02X %02X %02X\n",frame.can_id, frame.can_dlc, frame.data[0], frame.data[1], frame.data[2], frame.data[3], frame.data[4], frame.data[5], frame.data[6], frame.data[7]);    }
                 // velocity
                 if (frame.can_id == 0x412)
                 {
                         nominaldata.velocity = frame.data[1];
+                        nominaldata.iter = count++;
                 }
                 // orientation
                 if (frame.can_id == 0x236)

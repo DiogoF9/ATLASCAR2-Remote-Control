@@ -1,5 +1,6 @@
 int32 velocity
 int32 orientation
+int32 iter
 int32 odometer
 bool door
 bool left_blinker

@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   can_msgs
+  tf
   message_generation
 )
 
