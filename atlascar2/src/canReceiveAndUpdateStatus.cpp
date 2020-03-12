@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         struct ifreq ifr;
 
         /*name of the can device - vcan0 in case of virtual CAN bus*/
-        const char *ifname = "vcan0";
+        const char *ifname = "can0";
 
 	if((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
 		perror("Error while opening socket");
