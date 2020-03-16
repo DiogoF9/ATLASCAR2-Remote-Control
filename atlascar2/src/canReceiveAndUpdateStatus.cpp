@@ -39,7 +39,7 @@ int main(int argc, char **argv)
         struct ifreq ifr;
 
         /*name of the can device - vcan0 in case of virtual CAN bus*/
-        const char *ifname = "can0";
+        const char *ifname = "vcan0";
 
 	if((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
 		perror("Error while opening socket");
@@ -160,7 +160,30 @@ int main(int argc, char **argv)
                 {
                         nominaldata.seat_belt = false;
                 }
-
+                // mudança
+                if (frame.can_id == 0x418)
+                {
+                    if (frame.data[0] == 0x50) //P
+                    {
+                            nominaldata.gear = 1;
+                    }
+                    else if (frame.data[0] == 0x52) //R
+                    {
+                            nominaldata.gear = 2;
+                    }
+                    else if (frame.data[0] == 0x4E) //P
+                    {
+                            nominaldata.gear = 3;
+                    }
+                    else if (frame.data[0] == 0x44) //R
+                    {
+                            nominaldata.gear = 4;
+                    }
+                    else
+                    {
+                            nominaldata.gear = 0; //erro
+                    }
+                }
                 msg.id = frame.can_id;
                 msg.dlc = frame.can_dlc;
                 msg.data[0] = frame.data[0];

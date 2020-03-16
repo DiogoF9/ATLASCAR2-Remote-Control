@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     frame.can_id  = 0x900;
 	frame.can_dlc = 8;  // confirm
 	// define data in order to control steering
-	frame.data[0] = 0x00;
+	frame.data[0] = 0x15; // pretended car direction in degrees
     frame.data[1] = 0x00;
     frame.data[2] = 0x00;
     frame.data[3] = 0x00;
@@ -68,6 +68,6 @@ int main(int argc, char **argv)
     while(1)
     {
         write(s, &frame, sizeof(struct can_frame));
-        sleep(0.2);
+        sleep(1);
     }
 }
