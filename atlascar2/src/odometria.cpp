@@ -49,16 +49,12 @@ tf::Transform T0;
   tf::Transform T1;
   T1.setOrigin( tf::Vector3(msg->velocity/10, 0.0, 0.0) );
   tf::Quaternion q1;
-  q1.setRPY(0, 0,  0);
+  q1.setRPY(0, 0,  msg->orientation*3.14/180);
   T1.setRotation(q1);
 
-  tf::Transform transform;
-  transform.setOrigin( tf::Vector3(0, 0, 0.0) );
-  tf::Quaternion q;
-  q.setRPY(0, 0, msg->orientation*3.14/180);
-  transform.setRotation(q);
 
-  tf::Transform Tglobal = T1*transform;
+
+  tf::Transform Tglobal = T1;
   br.sendTransform(tf::StampedTransform(Tglobal, ros::Time::now(), "world", "atlascar2"));
 }
 
@@ -70,14 +66,6 @@ int main(int argc, char **argv)
   ros::Subscriber sub = n.subscribe("/NominalData", 1000, dataCallback);
 
   ROS_INFO("QUALQUER COISA");
-  static tf::TransformBroadcaster br;
-
-  tf::Transform transform;
-  transform.setOrigin( tf::Vector3(0,0, 0.0) );
-  tf::Quaternion q;
-  q.setRPY(0, 0, 0);
-  transform.setRotation(q);
-  br.sendTransform(tf::StampedTransform(transform, ros::Time::now(), "world", "atlascar2"));
 
 
   ros::spin();
