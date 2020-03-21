@@ -1,11 +1,8 @@
 #include "ros/ros.h"
 #include <atlascar2/NominalData.h>
 #include <can_msgs/Frame.h>
-
 #include <vector>
-
 #include <sstream>
-
 #include "stdio.h"
 #include "ctype.h"
 #include <unistd.h>   //para o usleep()
@@ -25,6 +22,7 @@
 #include <sys/ioctl.h>
 #include <linux/can.h>
 #include <linux/can/raw.h>
+#include <time.h>
 
 
 int main(int argc, char **argv)
@@ -58,12 +56,10 @@ int main(int argc, char **argv)
 	}
 
      ros::Publisher pub = n.advertise<atlascar2::NominalData>("NominalData", 1000);
-     ros::Publisher pub2 = n.advertise<can_msgs::Frame>("RawFrames", 1000);
      ros::Rate loop_rate(1000);
 
      // the message to be published
      atlascar2::NominalData nominaldata;
-     can_msgs::Frame msg;
 
 
      int count = 0;
@@ -80,11 +76,35 @@ int main(int argc, char **argv)
                         return 1;
                 }
                 //printf("message received: %03X  %d  %02X %02X %02X %02X %02X %02X %02X %02X\n",frame.can_id, frame.can_dlc, frame.data[0], frame.data[1], frame.data[2], frame.data[3], frame.data[4], frame.data[5], frame.data[6], frame.data[7]);    }
+
+
+                count = count + 1;
+                nominaldata.count = count;
+
+                // ao mandar mensagem segundo a segundo não preciso de calcular tempo
+
+                //time_t timer;
+                //struct tm y2k = {0};
+                //double seconds;
+
+                //y2k.tm_hour = 0;   y2k.tm_min = 0; y2k.tm_sec = 0;
+                //y2k.tm_year = 100; y2k.tm_mon = 0; y2k.tm_mday = 1;
+
+                //time(&timer);  /* get current time; same as: timer = time(NULL)  */
+
+                //seconds = difftime(timer,mktime(&y2k));
+
+
                 // velocity
                 if (frame.can_id == 0x412)
                 {
                         nominaldata.velocity = frame.data[1];
                         nominaldata.iter = count++;
+                        if ( count % 2 == 0)
+                            nominaldata.timeP = nominaldata.velocity;
+                        else
+                            nominaldata.timeI = nominaldata.velocity;
+                        // publish the current time x
                 }
                 // orientation
                 if (frame.can_id == 0x236)
@@ -106,7 +126,7 @@ int main(int argc, char **argv)
                         nominaldata.breaker = true;
                 }
                 // doors
-                if ((frame.can_id == 0x424 && frame.data[2] == 0x0F) || (frame.can_id == 0x424 && frame.data[2] == 0x0D) )
+                if ((frame.can_id == 0x424 && frame.data[2] == 0x0F) || (frame.can_id == 0x424 && frame.data[2] == 0x0D))
                 {
                         nominaldata.door = false;
                 }
@@ -184,23 +204,11 @@ int main(int argc, char **argv)
                             nominaldata.gear = 0; //erro
                     }
                 }
-                msg.id = frame.can_id;
-                msg.dlc = frame.can_dlc;
-                msg.data[0] = frame.data[0];
-                msg.data[1] = frame.data[1];
-                msg.data[2] = frame.data[2];
-                msg.data[3] = frame.data[3];
-                msg.data[4] = frame.data[4];
-                msg.data[5] = frame.data[5];
-                msg.data[6] = frame.data[6];
-                msg.data[7] = frame.data[7];
 
                 pub.publish(nominaldata);
-                pub2.publish(msg);
                 ros::spinOnce();
 
                 loop_rate.sleep();
-                ++count;
         }
         return 0;
 }

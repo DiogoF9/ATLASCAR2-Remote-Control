@@ -11,4 +11,6 @@ bool med_lights
 bool max_lights
 bool seat_belt
 bool breaker
-
+int32 count
+int32 timeI
+int32 timeP

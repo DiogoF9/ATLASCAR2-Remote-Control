@@ -4,15 +4,19 @@
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
 #include <vector>
+#include <math.h>
+
+#define PI 3.14159265
 
 void dataCallback(const atlascar2::NominalData::ConstPtr& msg)
 {
-  ROS_INFO("travao: %d", msg->breaker);
+  //ROS_INFO("travao: %d", msg->breaker);
   ROS_INFO("velocidade: %d", msg->velocity);
   ROS_INFO("orientacao: %d", msg->orientation);
 
   static tf::TransformBroadcaster br;
   static tf::TransformListener listener;
+
 
 /*
 tf::Transform T0;
@@ -45,11 +49,34 @@ tf::Transform T0;
             br.sendTransform(tf::StampedTransform(Tglobal, ros::Time::now(), "world", "atlascar2"));
 */
 
+float x;
+float y;
+
+// posicao inicial
+if (msg->count==1)
+{
+    x = 0;
+    y = 0;
+}
+
+// float velocidade = (double)msg->velocity/3600;
+
+//float delta_x = msg->velocity/1000*cos(msg->orientation*PI/180);
+//int delta_y = msg->velocity/1000*sin(msg->orientation*PI/180);
+
+x = x+0.001;
+y = y+0.001;
+
+ROS_INFO("contagem: %d", msg->count);
+ROS_INFO("posicao x: %f", x);
+ROS_INFO("posicao y: %f", y);
+
+
 /* faz orientacao a partir da origem */
   tf::Transform T1;
-  T1.setOrigin( tf::Vector3(msg->velocity/10, 0.0, 0.0) );
+  T1.setOrigin( tf::Vector3(x,y, 0.0) );
   tf::Quaternion q1;
-  q1.setRPY(0, 0,  msg->orientation*3.14/180);
+  q1.setRPY(0, 0,  msg->orientation*PI/180);
   T1.setRotation(q1);
 
 

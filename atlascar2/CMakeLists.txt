@@ -239,3 +239,7 @@ add_dependencies(sendFrame atlascar2_messages_cpp)
 add_executable(sendsteering src/sendsteering.cpp)
 target_link_libraries(sendsteering ${catkin_LIBRARIES})
 add_dependencies(sendsteering atlascar2_messages_cpp)
+
+add_executable(receiveAndReplayFrames src/receiveAndReplayFrames.cpp)
+target_link_libraries(receiveAndReplayFrames ${catkin_LIBRARIES})
+add_dependencies(receiveAndReplayFrames atlascar2_messages_cpp)
