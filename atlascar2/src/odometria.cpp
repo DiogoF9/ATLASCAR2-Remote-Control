@@ -61,15 +61,18 @@ if (msg->count==1)
 
 // float velocidade = (double)msg->velocity/3600;
 
-//float delta_x = msg->velocity/1000*cos(msg->orientation*PI/180);
-//int delta_y = msg->velocity/1000*sin(msg->orientation*PI/180);
+//float delta_x = msg->velocity/3600*cos(msg->orientation*PI/180);
+//float delta_y = msg->velocity/3600*sin(msg->orientation*PI/180);
 
-x = x+0.001;
-y = y+0.001;
+float delta_x = (float)msg->velocity/3600*cos(msg->orientation*PI/180);
+float delta_y = (float)msg->velocity/3600*sin(msg->orientation*PI/180);
+
+x = x+delta_x;
+y = y+delta_y;
 
 ROS_INFO("contagem: %d", msg->count);
-ROS_INFO("posicao x: %f", x);
-ROS_INFO("posicao y: %f", y);
+ROS_INFO("posicao x: %f", delta_x);
+ROS_INFO("posicao y: %f", delta_y);
 
 
 /* faz orientacao a partir da origem */
