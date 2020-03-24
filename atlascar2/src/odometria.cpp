@@ -59,13 +59,15 @@ if (msg->count==1)
     y = 0;
 }
 
-// float velocidade = (double)msg->velocity/3600;
-
-//float delta_x = msg->velocity/3600*cos(msg->orientation*PI/180);
-//float delta_y = msg->velocity/3600*sin(msg->orientation*PI/180);
-
 float delta_x = (float)msg->velocity/3600*cos(msg->orientation*PI/180);
 float delta_y = (float)msg->velocity/3600*sin(msg->orientation*PI/180);
+
+
+if (msg->gear == 2)
+{
+delta_x = -delta_x;
+delta_y = -delta_y;
+}
 
 x = x+delta_x;
 y = y+delta_y;
