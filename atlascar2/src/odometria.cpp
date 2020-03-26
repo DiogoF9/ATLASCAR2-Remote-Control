@@ -5,6 +5,7 @@
 #include <tf/transform_listener.h>
 #include <vector>
 #include <math.h>
+#include <visualization_msgs/Marker.h>
 
 #define PI 3.14159265
 
@@ -59,8 +60,10 @@ if (msg->count==1)
     y = 0;
 }
 
-float delta_x = (float)msg->velocity/3600*cos(msg->orientation*PI/180);
-float delta_y = (float)msg->velocity/3600*sin(msg->orientation*PI/180);
+int fator = 2; // quantas unidades de comprimento correspondem a um km
+
+float delta_x = (float)msg->velocity*fator/(3600000)*cos(msg->orientation*PI/180);
+float delta_y = (float)msg->velocity*fator/(3600000)*sin(msg->orientation*PI/180);
 
 
 if (msg->gear == 2)
@@ -88,6 +91,8 @@ ROS_INFO("posicao y: %f", delta_y);
 
   tf::Transform Tglobal = T1;
   br.sendTransform(tf::StampedTransform(Tglobal, ros::Time::now(), "world", "atlascar2"));
+
+
 }
 
 int main(int argc, char **argv)

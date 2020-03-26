@@ -100,10 +100,6 @@ int main(int argc, char **argv)
                 {
                         nominaldata.velocity = frame.data[1];
                         nominaldata.iter = count++;
-                        if ( count % 2 == 0)
-                            nominaldata.timeP = nominaldata.velocity;
-                        else
-                            nominaldata.timeI = nominaldata.velocity;
                         // publish the current time x
                 }
                 // orientation
@@ -195,7 +191,7 @@ int main(int argc, char **argv)
                     {
                             nominaldata.gear = 3;
                     }
-                    else if (frame.data[0] == 0x44) //R
+                    else if (frame.data[0] == 0x44) //D
                     {
                             nominaldata.gear = 4;
                     }
