@@ -91,8 +91,6 @@ ROS_INFO("posicao y: %f", delta_y);
 
   tf::Transform Tglobal = T1;
   br.sendTransform(tf::StampedTransform(Tglobal, ros::Time::now(), "world", "atlascar2"));
-
-
 }
 
 int main(int argc, char **argv)

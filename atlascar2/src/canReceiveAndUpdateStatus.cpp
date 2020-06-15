@@ -24,11 +24,22 @@
 #include <linux/can/raw.h>
 #include <time.h>
 
+#include <iostream>
+#include <string>
+#include <iomanip>
+#include <sstream>
+#include <vector>
+#include <fstream>
+using namespace std;
+#pragma once
 
 int main(int argc, char **argv)
 {
         ros::init(argc, argv, "canReceiveAndUpdateStatus");
         ros::NodeHandle n;
+
+
+
 
         int s;
         int nbytes_rcv;
@@ -61,10 +72,21 @@ int main(int argc, char **argv)
      // the message to be published
      atlascar2::NominalData nominaldata;
 
+    ofstream inFile;
+	inFile.open("numbers.txt");
+
+    //check for error
+    if (inFile.fail()) {
+    cerr << "error opening file" << endl;
+    exit(1);
+    }
+    int angulo;
+
 
      int count = 0;
      while (ros::ok())
 	{
+
 	        nbytes_rcv = recv(s, &frame, sizeof(struct can_frame),0);
 
                 if (nbytes_rcv < 0) {
@@ -200,7 +222,18 @@ int main(int argc, char **argv)
                             nominaldata.gear = 0; //erro
                     }
                 }
+                // direcao desejada
+                if (frame.can_id == 0x500)
+                {
+                printf("estou aqui\n");
 
+                angulo = frame.data[0];
+
+                inFile << angulo;
+                inFile << " ";
+                inFile << angulo << endl;
+
+                }
                 pub.publish(nominaldata);
                 ros::spinOnce();
 

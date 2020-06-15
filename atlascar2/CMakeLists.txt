@@ -12,6 +12,7 @@ find_package(catkin REQUIRED COMPONENTS
   rospy
   std_msgs
   can_msgs
+  visualization_msgs
   tf
   message_generation
 )
@@ -74,6 +75,7 @@ find_package(catkin REQUIRED COMPONENTS
    DEPENDENCIES
    std_msgs
    can_msgs
+   visualization_msgs
  )
 
 ################################################
@@ -108,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 catkin_package(
 #  INCLUDE_DIRS include
 #  LIBRARIES atlascar2
-  CATKIN_DEPENDS roscpp rospy can_msgs message_runtime
+  CATKIN_DEPENDS roscpp rospy can_msgs visualization_msgs message_runtime
 #  DEPENDS system_lib
 )
 

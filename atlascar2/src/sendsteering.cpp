@@ -25,6 +25,7 @@
 #include <linux/can/raw.h>
 
 
+
 int main(int argc, char **argv)
 {
 
@@ -51,12 +52,13 @@ int main(int argc, char **argv)
 		return -2;
 	}
 
-    //example for open door
-    frame.can_id  = 0x900;
+    int dirD = 15;
+
+    frame.can_id  = 0x500;
 	frame.can_dlc = 8;  // confirm
 	// define data in order to control steering
-	frame.data[0] = 0x15; // pretended car direction in degrees
-    frame.data[1] = 0x00;
+	frame.data[0] = dirD; // pretended car direction in degrees
+    frame.data[1] = 0x00; // 01 - right , 00 - left
     frame.data[2] = 0x00;
     frame.data[3] = 0x00;
     frame.data[4] = 0x00;
@@ -65,9 +67,10 @@ int main(int argc, char **argv)
     frame.data[7] = 0x00;
 
 
+
     while(1)
     {
         write(s, &frame, sizeof(struct can_frame));
-        sleep(1);
+        usleep(10000);
     }
 }
