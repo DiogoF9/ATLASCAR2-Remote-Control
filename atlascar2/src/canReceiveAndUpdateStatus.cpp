@@ -39,8 +39,8 @@ int main(int argc, char **argv)
         ros::NodeHandle n;
 
 
-
-
+        int angulo = 0;
+        int contador=0;
         int s;
         int nbytes_rcv;
         struct sockaddr_can addr;
@@ -80,7 +80,8 @@ int main(int argc, char **argv)
     cerr << "error opening file" << endl;
     exit(1);
     }
-    int angulo;
+    double signal1;
+    double signal2;
 
 
      int count = 0;
@@ -128,6 +129,7 @@ int main(int argc, char **argv)
                 if (frame.can_id == 0x236)
                 {
                         nominaldata.orientation = (frame.data[0]*256+frame.data[1]-4096)/2;
+                        angulo = (frame.data[0]*256+frame.data[1]-4096)/2;
                 }
                 // odometer
                 if (frame.can_id == 0x412)
@@ -225,13 +227,18 @@ int main(int argc, char **argv)
                 // direcao desejada
                 if (frame.can_id == 0x500)
                 {
+                contador += 1;
                 printf("estou aqui\n");
 
-                angulo = frame.data[0];
+                signal1 = (float)(frame.data[0]*100+frame.data[1])*5/1023;
+                signal2 = (frame.data[2]*100+frame.data[3])*5/1023;
 
-                inFile << angulo;
+
+                inFile << contador;
                 inFile << " ";
-                inFile << angulo << endl;
+                inFile << signal1;
+                inFile << " ";
+                inFile << signal2 << endl;
 
                 }
                 pub.publish(nominaldata);
