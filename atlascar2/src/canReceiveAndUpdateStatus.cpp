@@ -40,6 +40,7 @@ int main(int argc, char **argv)
 
 
         int angulo = 0;
+        int velocidade = 0;
         int contador=0;
         int s;
         int nbytes_rcv;
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
         struct ifreq ifr;
 
         /*name of the can device - vcan0 in case of virtual CAN bus*/
-        const char *ifname = "vcan0";
+        const char *ifname = "can0";
 
 	if((s = socket(PF_CAN, SOCK_RAW, CAN_RAW)) < 0) {
 		perror("Error while opening socket");
@@ -73,7 +74,7 @@ int main(int argc, char **argv)
      atlascar2::NominalData nominaldata;
 
     ofstream inFile;
-	inFile.open("numbers.txt");
+	inFile.open("qq.txt");
 
     //check for error
     if (inFile.fail()) {
@@ -122,6 +123,7 @@ int main(int argc, char **argv)
                 if (frame.can_id == 0x412)
                 {
                         nominaldata.velocity = frame.data[1];
+                        velocidade = frame.data[1];
                         nominaldata.iter = count++;
                         // publish the current time x
                 }
@@ -231,14 +233,18 @@ int main(int argc, char **argv)
                 printf("estou aqui\n");
 
                 signal1 = (float)(frame.data[0]*100+frame.data[1])*5/1023;
-                signal2 = (frame.data[2]*100+frame.data[3])*5/1023;
+                signal2 = (float)(frame.data[2]*100+frame.data[3])*5/1023;
 
 
                 inFile << contador;
                 inFile << " ";
                 inFile << signal1;
                 inFile << " ";
-                inFile << signal2 << endl;
+                inFile << signal2;
+                inFile << " ";
+                inFile << angulo;
+                inFile << " ";
+                inFile << velocidade << endl;
 
                 }
                 pub.publish(nominaldata);
