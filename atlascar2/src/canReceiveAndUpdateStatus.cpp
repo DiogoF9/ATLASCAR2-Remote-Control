@@ -74,7 +74,7 @@ int main(int argc, char **argv)
      atlascar2::NominalData nominaldata;
 
     ofstream inFile;
-	inFile.open("qq.txt");
+	inFile.open("40.txt");
 
     //check for error
     if (inFile.fail()) {
@@ -83,6 +83,7 @@ int main(int argc, char **argv)
     }
     double signal1;
     double signal2;
+    double tempo;
 
 
      int count = 0;
@@ -234,7 +235,7 @@ int main(int argc, char **argv)
 
                 signal1 = (float)(frame.data[0]*100+frame.data[1])*5/1023;
                 signal2 = (float)(frame.data[2]*100+frame.data[3])*5/1023;
-
+                tempo = (float)(frame.data[4]);
 
                 inFile << contador;
                 inFile << " ";
@@ -244,7 +245,9 @@ int main(int argc, char **argv)
                 inFile << " ";
                 inFile << angulo;
                 inFile << " ";
-                inFile << velocidade << endl;
+                inFile << velocidade;
+                inFile << " ";
+                inFile << tempo << endl;
 
                 }
                 pub.publish(nominaldata);
